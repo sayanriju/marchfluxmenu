@@ -11,13 +11,13 @@ def IconFind(icon_name):
 				return os.path.join(root, name)
 			elif icon_name.partition('.')[0] in name:
 				return os.path.join(root, name)
-			else:
-				for root, dirs, files in os.walk('/usr/share/icons'):
-					for name in files:
-						if icon_name == name:
-							return os.path.join(root, name)
-						elif icon_name.partition('.')[0] in name:
-							return os.path.join(root, name)
+#			else:
+#				for root, dirs, files in os.walk('/usr/share/icons'):
+#					for name in files:
+#						if icon_name == name:
+#							return os.path.join(root, name)
+#						elif icon_name.partition('.')[0] in name:
+#							return os.path.join(root, name)
 				
 			
 	return ''		
@@ -135,21 +135,31 @@ def ParseDesktopFile(filename):
 	f.close()
 	
 
-#def ParseMenuFile():
-#	filename = os.path.expanduser('~/.fluxbox/menu')
-#	f = file(filename,'r')
-#	text = f.read()
-#	
-#	line_num = 0
-#	body = ''
-#	for line in f.readlines():
-#		line_num += 1
-#		if '[submenu]' in line:
-#			start = line_num
-#			if '[submenu]' in lin
-#			body += line
-#			
+def ParseMenuFile():	
+	filename = os.path.expanduser('~/.fluxbox/menu')
+	f = file(filename,'r')
 	
+	ln =0
+	list = []
+	for line in f.readlines():
+		ln += 1
+		if '[submenu]' in line:
+			label = ''
+			for i in range(line.find('(')+1,line.find(')')):
+				label += line[i]
+				#print label	
+			list.append((label,ln-1))
+	
+	f.close()
+	return list
 
-
-
+def GetLatestFile(dirname):
+	dirname = '/usr/share/applications/'
+	
+	list = []
+	for files in os.listdir(dirname):
+		a = ((os.path.getctime(os.path.join(dirname,files))),os.path.join(dirname,files))
+		list.append(a)
+		
+	list.sort()
+	return list[-1][1]
