@@ -1,10 +1,12 @@
 #!/usr/bin/env python
 ##Fluxbox Menu Generator
 
+'''' Generates the fluxbox menu '''
+
 import os, fnmatch
 from main import *
 
-
+## Setting up seubmenus with Tango icons
 m8 = SubMenuItem('Sound & Video','/home/sayan/marchfluxmenu/icons/applications-multimedia.png')
 m7 = SubMenuItem('Programming','/home/sayan/marchfluxmenu/icons/applications-development.png')
 m1 = SubMenuItem('Education','/home/sayan/marchfluxmenu/icons/education.png')
@@ -18,12 +20,10 @@ m6 = SubMenuItem('Others','/home/sayan/marchfluxmenu/icons/applications-other.pn
 
 menu_list = [m0,m1,m2,m3,m4,m5,m7,m8,m9,m6]
 
-#for root, dirs, files in os.walk('/usr/share/'):
-#	for name in files:
-#		if fnmatch.fnmatch(name,'*.desktop'):
+
+## Grouping ExecMenuItem instances obtained from each .desktop file according to the submenus to which they belong
 for filename in os.listdir('/usr/share/applications/'):
 	if fnmatch.fnmatch(filename,'*.desktop'):
-	#filename = os.path.join(root, name)
 		try:
 			item = ParseDesktopFile('/usr/share/applications/'+filename)
 			
@@ -36,17 +36,20 @@ for filename in os.listdir('/usr/share/applications/'):
 			pass
 
 
-##########################################
-
+## Initial part of menu (add ur fav programs here)
 string = '[begin] (March Flux) \n'
 string += ExecMenuItem('Web Browser', 'firefox', IconFind('firefox.png'), '').CreateMenuLine()
 string += ExecMenuItem('File Manager', 'thunar', IconFind('thunar.png'), '').CreateMenuLine()
-###### add ur fav programs here
+
+
+## Submenu part with respective members being created
 string += '[separator]\n'
 for menu in menu_list:
 	if menu.population != 0:
 		string += menu.GenerateSubMenu() +'\n'
 	
+
+## Concluding part of menu
 #string +='[separator]\n[submenu] (fluxbox menu)\
 #		[config] (Configure)\n\
 #		[submenu] (User Styles) {Choose a style...}\n\
@@ -70,7 +73,7 @@ for menu in menu_list:
 string += '[end]\n'
 
 	
-
+## Write to menu file
 f = file('/home/sayan/.fluxbox/menu','w')
 f.write(string)
 

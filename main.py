@@ -1,10 +1,15 @@
 #!/usr/bin/env python
 ##Fluxbox Menu Generator
 
+''' This is the main file where various classes and functions are defined'''
+
 import os, fnmatch
 
 
 def IconFind(icon_name):
+	''' Implements the icon finding algorithm. Tries to match label name with names of 
+	icon files in the directory /usr/share/pixmaps'''
+	
 	for root, dirs, files in os.walk('/usr/share/pixmaps'):
 		for name in files:
 			if icon_name == name:
@@ -49,9 +54,6 @@ class SubMenuItem:
 		self.members = members
 		self.body = '  [submenu]' + '  ' + '('+label+')' + '  ' +'<'+ icon + '>' +'\n' + '  [end]'
 		
-#	def GenerateSubmenu(self):
-#		self.body += '[end]'
-#		return self.body
 		
 	def AppendToMenu(self, ExecMenuItem):
 #		if '[end]' not in self.body:
@@ -59,7 +61,6 @@ class SubMenuItem:
 #		else:
 	
 		menuline = ExecMenuItem.CreateMenuLine()
-		#self.body.replace('\t','')
 		list = self.body.split('\n')
 		### No Sorting of menu items!! Can be added easily if reqrd.
 
@@ -85,12 +86,13 @@ class SubMenuItem:
 
 
 def ParseDesktopFile(filename):
+	''' Parses a .desktop file and returns an ExecMenuItem instance'''
+	
 	label = ''
 	command = ''
 	icon = ''
 	submenu = ''
 	
-	#fff = os.path.join()
 	f = file(filename)
 	
 	for line in f.readlines():
@@ -136,6 +138,9 @@ def ParseDesktopFile(filename):
 	
 
 def ParseMenuFile():	
+	'''' Parses the fluxbox menu file and returns a list of tuples, 	each 2-tuple
+	containing the submenu name & line number where the submenu name appears in the menu file '''
+	
 	filename = os.path.expanduser('~/.fluxbox/menu')
 	f = file(filename,'r')
 	
@@ -147,13 +152,14 @@ def ParseMenuFile():
 			label = ''
 			for i in range(line.find('(')+1,line.find(')')):
 				label += line[i]
-				#print label	
 			list.append((label,ln-1))
 	
 	f.close()
 	return list
 
-def GetLatestFile(dirname):
+def GetLatestFiles(dirname):
+	''' returns a list of files (with filepath) sorted according to newest first'''
+	
 	dirname = '/usr/share/applications/'
 	
 	list = []
@@ -162,4 +168,30 @@ def GetLatestFile(dirname):
 		list.append(a)
 		
 	list.sort()
-	return list[-1][1]
+	list.reverse()
+	
+	filelist = []
+	for var in list:
+		filelist.append(var[1])
+		
+	return filelist
+
+def ListExecItems(filelist):
+	''' Returns a list if 2-tuples, each containing the *.desktop filepath &
+	the label of the ExecMenuItem instance that the file describes
+	To be used for removing extinct items from menu'''
+	
+	
+	list = []
+	#filelist = GetLatestFiles('')
+	for filename in filelist:
+		if fnmatch.fnmatch(filename,'*.desktop'):
+		
+			try:
+				item = ParseDesktopFile(files)
+				a = ((filename, item.label))
+				list.append(a)
+			except:
+				pass
+
+	return list
