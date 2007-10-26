@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+
+## Comment out /remove the following lines to configure ROOT account
+#######################################################################
+RUNUSER=`id -nu`
+
+if [ "$RUNUSER" == "root" ]   
+    then
+    echo "There is no need to run this script as ROOT."
+    echo "It installs and configures the fluxbox menu for current user only"
+    echo "If it is the ROOT user whose account you want to configure,"
+    echo "you will have to hand edit the installer file to allow that"
+    exit 1
+#######################################################################
+else
+	echo ' This will rewrite your current fluxbox menu.'
+	echo ' You can find a backup called menu.mfm.bak under ~/.fluxbox'
+	mkdir ~/.marchfluxmenu
+	cp -R ../marchfluxmenu/. ~/.marchfluxmenu/
+	cp ~/.fluxbox/menu ~/.fluxbox/menu.mfm.bak
+	exec python ~/.marchfluxmenu/marchfluxmenu_generate.py &
+	#sed '/bash/ i\~/.marchfluxmenu/./mfmdaemon &' ~/.fluxbox/startup > temp
+	#mv temp ~/.fluxbox/startup
+	~/.marchfluxmenu/./mfmdaemon &
+	
+	echo '-----------------------------------'
+	echo 'Installation Complete'
+	echo '-----------------------------------'
+	echo ' Please add the line :'
+	echo '   ~/.marchfluxmenu/./mfmdaemon & '
+	echo 'to your fluxbox startup file if you want Marchfluxmenu'
+	echp 'to function everytime fluxbox starts (RECOMMENDED)'
+	
+
+
+
+
+
+
+
+
+
+
+fi

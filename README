@@ -1,0 +1,24 @@
+Marchfluxmenu is an attempt to have the fluxbox menu emulate the Gnome (or XFCE) menu, in both looks and functionallity.
+It first generates a fluxbox menu for the current user from all the valid .desktop files in /usr/share/applications/
+The menu entries are categorized in a similar way as Gnome menu, viz as Accessories, Games, Graphics, Internet, etc etc.
+The program then uses a daemon like script (mfmdaemon) to watch for changes in the directory /usr/share/applications/
+If a new .desktop file is added/removed (for installation/removal of a package), the fluxbox menu refreshes to reflect the change!
+You can also make changes manually to the menu. They won't be lost while refreshing the menu.
+The excellent GUI menu editor called fluxMenu is included herewith.
+
+--------------------
+How to Use it:
+--------------------
+
+Marchfluxmenu is written in python, which you need to have in your system.
+
+Get the tarball, untar it and run the installer script there.
+This will create a ~/.marchfluxmenu directory where the program will be 'installed'.The installer also generates a new fluxbox menu. The current menu will be backed up as ~/.fluxbox/menu.mfm.bak
+The mfmdaemon is also started by the installer.
+You might want to add it to your fluxbox startup file as well, if you want it to run everytime fluxbox starts (Recommended!).
+Just add the line 
+		~/.marchfluxmenu/.mfmdaemon &
+at the appropriate place of ~/.fluxbox/startup
+
+Now generate a first time menu: python marchfluxmenu_generate.py
+This will overwrite your 
