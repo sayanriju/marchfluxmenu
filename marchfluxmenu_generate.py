@@ -7,16 +7,16 @@ import os, fnmatch
 from main import *
 
 ## Setting up seubmenus with Tango icons
-m8 = SubMenuItem('Sound & Video','/home/sayan/marchfluxmenu/icons/applications-multimedia.png')
-m7 = SubMenuItem('Programming','/home/sayan/marchfluxmenu/icons/applications-development.png')
-m1 = SubMenuItem('Education','/home/sayan/marchfluxmenu/icons/education.png')
-m2 = SubMenuItem('Games','/home/sayan/marchfluxmenu/icons/applications-games.png')
-m3 = SubMenuItem('Graphics','/home/sayan/marchfluxmenu/icons/applications-graphics.png')
-m4 = SubMenuItem('Internet','/home/sayan/marchfluxmenu/icons/applications-internet.png')
-m5 = SubMenuItem('Office','/home/sayan/marchfluxmenu/icons/applications-office.png')
-m9 = SubMenuItem('System Tools','/home/sayan/marchfluxmenu/icons/applications-system.png')
-m0 = SubMenuItem('Accessories','/home/sayan/marchfluxmenu/icons/applications-accessories.png')
-m6 = SubMenuItem('Others','/home/sayan/marchfluxmenu/icons/applications-other.png')
+m8 = SubMenuItem('Sound & Video','~/.marchfluxmenu/icons/applications-multimedia.png')
+m7 = SubMenuItem('Programming','~/.marchfluxmenu/icons/applications-development.png')
+m1 = SubMenuItem('Education','~/.marchfluxmenu/icons/applications-education.png')
+m2 = SubMenuItem('Games','~/.marchfluxmenu/icons/applications-games.png')
+m3 = SubMenuItem('Graphics','~/.marchfluxmenu/icons/applications-graphics.png')
+m4 = SubMenuItem('Internet','~/.marchfluxmenu/icons/applications-internet.png')
+m5 = SubMenuItem('Office','~/.marchfluxmenu/icons/applications-office.png')
+m9 = SubMenuItem('System Tools','~/.marchfluxmenu/icons/applications-system.png')
+m0 = SubMenuItem('Accessories','~/.marchfluxmenu/icons/applications-accessories.png')
+m6 = SubMenuItem('Others','~/.marchfluxmenu/icons/applications-other.png')
 
 menu_list = [m0,m1,m2,m3,m4,m5,m7,m8,m9,m6]
 
@@ -39,7 +39,15 @@ for filename in os.listdir('/usr/share/applications/'):
 ## Initial part of menu (add ur fav programs here)
 string = '[begin] (March Flux) \n'
 string += ExecMenuItem('Web Browser', 'firefox', IconFind('firefox.png'), '').CreateMenuLine()
-string += ExecMenuItem('File Manager', 'thunar', IconFind('thunar.png'), '').CreateMenuLine()
+string += ExecMenuItem('Terminal', 'xterm', IconFind('term.png'), '').CreateMenuLine()
+string +='''    [separator] (--------)
+	[submenu] (Settings) {settings} <~/.marchfluxmenu/icons/preferences-system.png>
+		[exec] (Menu Editor) {~/.marchfluxmenu/fluxmenu/fluxMenu.py}
+		[config] (Fluxbox Menu)
+		[reconfig] (Reload config)
+	[end]
+	[separator] (--------)'''
+
 
 
 ## Submenu part with respective members being created
@@ -74,7 +82,8 @@ string += '[end]\n'
 
 	
 ## Write to menu file
-f = file('/home/sayan/.fluxbox/menu','w')
+filename = os.path.expanduser('~/.fluxbox/menu')
+f = file(filename,'w')
 f.write(string)
 
 	

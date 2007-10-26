@@ -25,7 +25,7 @@ def IconFind(icon_name):
 #							return os.path.join(root, name)
 				
 			
-	return ''		
+	return '~/.marchfluxmenu/icons/application-default-icon.png'		
 	
 
 class ExecMenuItem:
@@ -63,9 +63,9 @@ class SubMenuItem:
 		menuline = ExecMenuItem.CreateMenuLine()
 		list = self.body.split('\n')
 		### No Sorting of menu items!! Can be added easily if reqrd.
-
+		#list.sort()
 		
-		end = list.pop()						## removing the '[end]'
+		end = list.pop()	## removing the '[end]'
 		list.append('\t\t' + menuline)			## Adding the new Exec item
 		
 		self.body = list[0] 					## rebuilding body
@@ -176,7 +176,7 @@ def GetLatestFiles(dirname):
 		
 	return filelist
 
-def ListExecItems(filelist):
+def ListExecItemsFromDesktop(filelist):
 	''' Returns a list if 2-tuples, each containing the *.desktop filepath &
 	the label of the ExecMenuItem instance that the file describes
 	To be used for removing extinct items from menu'''
@@ -186,12 +186,29 @@ def ListExecItems(filelist):
 	#filelist = GetLatestFiles('')
 	for filename in filelist:
 		if fnmatch.fnmatch(filename,'*.desktop'):
-		
+			item = ParseDesktopFile(filename)
 			try:
-				item = ParseDesktopFile(files)
 				a = ((filename, item.label))
 				list.append(a)
 			except:
 				pass
-
 	return list
+
+def ListExecItemsFromMenu(menufile):
+	''' returns a list of labels of the ExecMenuItem elements defined in the menufile 
+	(not required right now)'''
+	
+	menufile = os.path.expanduser('~/.fluxbox/menu')
+	
+	f = file(menufile,'r')
+	
+	list = []
+	text = f.read()
+	lines = text.split('\n')
+	
+	for l in lines:
+		if '[exec]' in l:
+			a = l.partition('(')[2].partition(')')[0]
+			list.append(a)
+	
+	return list	
