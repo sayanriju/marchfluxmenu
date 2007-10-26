@@ -41,7 +41,7 @@ string = '[begin] (March Flux) \n'
 string += ExecMenuItem('Web Browser', 'firefox', IconFind('firefox.png'), '').CreateMenuLine()
 string += ExecMenuItem('Terminal', 'xterm', IconFind('term.png'), '').CreateMenuLine()
 string +='''    [separator] (--------)
-	[submenu] (Settings) {settings} <~/.marchfluxmenu/icons/preferences-system.png>
+	[submenu] (Settings) {settings} <~/.marchfluxmenu/icons/preferences-$
 		[exec] (Menu Editor) {~/.marchfluxmenu/fluxmenu/fluxMenu.py}
 		[config] (Fluxbox Menu)
 		[reconfig] (Reload config)

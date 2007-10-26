@@ -1,0 +1,40 @@
+#! /bin/bash
+
+## Variables
+DIRECTORY=/usr/share/applications/		# Directory to watch for changes
+PROGRAM=~/.marchfluxmenu/trigger.py		# Initiation!
+
+
+start_count=`ls $DIRECTORY | wc -l`
+
+
+exec python $PROGRAM &
+
+
+while [ "true" ]
+ do
+ sleep 1
+	count=`ls $DIRECTORY | wc -l`
+      
+	if [ "$start_count" -gt "$count" ]
+        then
+ 		#sleep 1
+                 exec python ~/.marchfluxmenu/onremove.py &
+		
+
+		start_count=$count
+                
+        fi
+	
+	if [ "$start_count" -lt "$count" ]
+        then
+ 		#sleep 1
+                 exec python ~/.marchfluxmenu/onadd.py &
+		
+		
+		start_count=$count
+                
+        fi
+        #sleep 1
+
+done
