@@ -22,7 +22,9 @@ menu_list = [m0,m1,m2,m3,m4,m5,m7,m8,m9,m6]
 
 
 ## Grouping ExecMenuItem instances obtained from each .desktop file according to the submenus to which they belong
-for filename in os.listdir('/usr/share/applications/'):
+desktop_file_list = os.listdir('/usr/share/applications/')
+desktop_file_list.sort()
+for filename in desktop_file_list:
 	if fnmatch.fnmatch(filename,'*.desktop'):
 		try:
 			item = ParseDesktopFile('/usr/share/applications/'+filename)
@@ -32,7 +34,7 @@ for filename in os.listdir('/usr/share/applications/'):
 					menu.AppendToMenu(item)
 					break
 		except:
-			print filename
+			#print filename
 			pass
 
 
