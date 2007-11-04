@@ -14,24 +14,27 @@ if [ "$RUNUSER" == "root" ]
     exit 1
 #######################################################################
 else
-	echo ' This will rewrite your current fluxbox menu.'
-	echo ' You can find a backup called menu.mfm.bak under ~/.fluxbox'
-	mkdir ~/.marchfluxmenu
-	cp -R ../marchfluxmenu/. ~/.marchfluxmenu/
-	cp ~/.fluxbox/menu ~/.fluxbox/menu.mfm.bak
-	exec python ~/.marchfluxmenu/marchfluxmenu_generate.py &
+	echo '-----------------------------------'
+	echo 'This will rewrite your current fluxbox menu.'
+	echo 'You can find a backup called menu.mfm.bak under ~/.fluxbox'
+	mkdir ~/.marchfluxmenu 2>/dev/null
+	cp -R ../marchfluxmenu/. ~/.marchfluxmenu/ 2>/dev/null
+	cp ~/.fluxbox/menu ~/.fluxbox/menu.mfm.bak 2>/dev/null
+	exec python ~/.marchfluxmenu/marchfluxmenu_generate.py & 2>/dev/null
 	#sed '/bash/ i\~/.marchfluxmenu/./mfmdaemon &' ~/.fluxbox/startup > temp
 	#mv temp ~/.fluxbox/startup
-	~/.marchfluxmenu/./mfmdaemon &
+	~/.marchfluxmenu/./mfmdaemon & 2>/dev/null
 	
 	echo '-----------------------------------'
 	echo 'Installation Complete'
 	echo '-----------------------------------'
-	echo ' Please add the line :'
-	echo '   ~/.marchfluxmenu/./mfmdaemon & '
+	echo 'Please add the line :'
+	echo '    ~/.marchfluxmenu/./mfmdaemon & '
 	echo 'to your fluxbox startup file if you want Marchfluxmenu'
-	echp 'to function everytime fluxbox starts (RECOMMENDED)'
+	echo 'to function everytime fluxbox starts (RECOMMENDED)'
+	echo '-----------------------------------'
 	
+	exit 1
 
 
 

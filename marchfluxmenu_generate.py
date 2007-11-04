@@ -3,7 +3,7 @@
 
 '''' Generates the fluxbox menu '''
 
-import os, fnmatch
+import os
 from main import *
 
 ## Setting up seubmenus with Tango icons
@@ -22,20 +22,19 @@ menu_list = [m0,m1,m2,m3,m4,m5,m7,m8,m9,m6]
 
 
 ## Grouping ExecMenuItem instances obtained from each .desktop file according to the submenus to which they belong
-desktop_file_list = os.listdir('/usr/share/applications/')
-desktop_file_list.sort()
+desktop_file_list = SortDesktopFiles()
 for filename in desktop_file_list:
-	if fnmatch.fnmatch(filename,'*.desktop'):
-		try:
-			item = ParseDesktopFile('/usr/share/applications/'+filename)
-			
-			for menu in menu_list:
-				if menu.label == item.submenu:
-					menu.AppendToMenu(item)
-					break
-		except:
-			#print filename
-			pass
+	
+	try:
+		item = ParseDesktopFile(filename)
+		
+		for menu in menu_list:
+			if menu.label == item.submenu:
+				menu.AppendToMenu(item)
+				break
+	except:
+		#print filename
+		pass
 
 
 ## Initial part of menu (add ur fav programs here)

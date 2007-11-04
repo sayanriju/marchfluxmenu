@@ -3,7 +3,7 @@
 
 ''' This is the main file where various classes and functions are defined'''
 
-import os, fnmatch
+import os, fnmatch, sets
 
 
 def IconFind(icon_name):
@@ -179,7 +179,7 @@ def GetLatestFiles(dirname):
 def ListExecItemsFromDesktop(filelist):
 	''' Returns a list if 2-tuples, each containing the *.desktop filepath &
 	the label of the ExecMenuItem instance that the file describes
-	To be used for removing extinct items from menu'''
+	To be used for removing extinct items from menu. This list is sorted according to label names'''
 	
 	
 	list = []
@@ -192,6 +192,7 @@ def ListExecItemsFromDesktop(filelist):
 				list.append(a)
 			except:
 				pass
+		list.sort(lambda x,y:cmp(x[1].upper(),y[1].upper()))
 	return list
 
 def ListExecItemsFromMenu(menufile):
@@ -212,3 +213,11 @@ def ListExecItemsFromMenu(menufile):
 			list.append(a)
 	
 	return list	
+
+def SortDesktopFiles():
+	list = ListExecItemsFromDesktop(GetLatestFiles(''))
+	desktop_file_list = []
+	for x in list:
+		desktop_file_list.append(x[0])
+	
+	return desktop_file_list
