@@ -202,8 +202,11 @@ def ParseDesktopFile(filename):
 	
 
 def ParseFluxboxMenu(menufile):
-	''' Parses the ~/.fluxbox/menu file, and returns a dictonary  of included SubMenuItem instances, 
-	complete with respective ExecMenuItem members. Keys of the dict are the submenu labels '''
+	''' Parses the ~/.fluxbox/menu file, and returns a 3-tuple whose elements are respectively :
+		(1) The initial text, i.e the part of fluxbox menu preceeding the submenu block
+		(2) The concluding text, i.e. the part of fluxbox menu following the submenu block
+		(3) A dictionary  of included SubMenuItem instances, with the submenu labels (as defined
+																		in submenu_dict) as the keys '''
 	
 	menufile = os.path.expanduser('~/.fluxbox/menu')
 	submenus_in_menu = []
@@ -241,19 +244,9 @@ def ParseFluxboxMenu(menufile):
 					
 		else:
 			pass
+		
+	dict = submenu_dict
 	
-	dict = { 
-	'Sound & Video': m8,
-	'Programming':m7, 
-	'Education':m1, 
-	'Games':m2,
-	'Graphics':m3,
-	'Internet':m4,
-	'Office':m5,
-	'System Tools':m9,
-	'Accessories':m0,
-	'Others':m6
-	}
 	for m in submenus_in_menu:
 		dict[m.label] = m
 		
@@ -279,10 +272,7 @@ def GetLatestFiles(dirname):
 	return filelist
 
 def ListExecItemsFromDesktop(filelist):
-	''' Returns a list if 2-tuples, each containing the *.desktop filepath &
-	the  ExecMenuItem instance that the file describes
-	To be used for removing extinct items from menu. ##This list is sorted '''
-	
+	''' Returns a list of all the ExecMenuItem-s parsed from the currently existing .desktop files '''	
 	
 	l = []
 	filelist = GetLatestFiles('')
@@ -299,16 +289,3 @@ def ListExecItemsFromDesktop(filelist):
 				pass
 		#list.sort(lambda x,y:cmp(x[1].upper(),y[1].upper()))
 	return l
-
-
-
-
-
-
-
-
-
-
-###############
-#a,b,c = ParseFluxboxMenu('')
-#print c

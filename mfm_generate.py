@@ -25,6 +25,7 @@ string += ExecMenuItem('Terminal', 'xterm', IconFind('term.png'), '').GenerateMe
 string +='''    [separator] (--------)
  [submenu] (Settings) {settings} <~/.marchfluxmenu/icons/preferences-system.png>
 		[exec] (Menu Editor) {~/.marchfluxmenu/fluxmenu/fluxMenu.py}
+		[separator] (--------)
 		[config] (Fluxbox Menu)
 		[reconfig] (Reload Config)
 		[restart] (Restart Fluxbox)
