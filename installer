@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 
-## Comment out /remove the following lines to configure ROOT account
+## Comment out/remove the following lines to configure ROOT account
 #######################################################################
 RUNUSER=`id -nu`
 
@@ -20,7 +20,7 @@ else
 	mkdir ~/.marchfluxmenu 2>/dev/null
 	cp -R ../marchfluxmenu/. ~/.marchfluxmenu/ 2>/dev/null
 	cp ~/.fluxbox/menu ~/.fluxbox/menu.mfm.bak 2>/dev/null
-	exec python ~/.marchfluxmenu/marchfluxmenu_generate.py & 2>/dev/null
+	exec python ~/.marchfluxmenu/mfm_generate.py & 2>/dev/null
 	#sed '/bash/ i\~/.marchfluxmenu/./mfmdaemon &' ~/.fluxbox/startup > temp
 	#mv temp ~/.fluxbox/startup
 	~/.marchfluxmenu/./mfmdaemon & 2>/dev/null

@@ -1,10 +1,12 @@
+MarchFluxMenu First Release
+************************************
 Marchfluxmenu is an attempt to have the fluxbox menu emulate the Gnome (or XFCE) menu, in both looks and functionallity.
-It first generates a fluxbox menu for the current user from all the valid .desktop files found in /usr/share/applications/
+It first generates a fluxbox menu for the current user from all the valid .desktop files  found in /usr/share/applications/
 The menu entries are categorized in a similar way as Gnome menu, viz as Accessories, Games, Graphics, Internet, etc etc.
 The program then uses a daemon like script (mfmdaemon) to watch for changes in the directory    /usr/share/applications/
 If a new .desktop file is added/removed (for installation/removal of a package), the fluxbox menu auto-refreshes to reflect the change!
-You can also make changes manually to the menu. They won't be lost while refreshing the menu.
-The excellent GUI menu editor called fluxMenu is included herewith.
+You can also make changes manually to the menu items (NOT the submenu names themselves, yet!). They won't be lost while refreshing the menu.
+The excellent GUI menu editor called fluxMenu (3rd party app) is included herewith.
 
 --------------------
 How to Use it:
