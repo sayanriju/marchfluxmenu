@@ -1,27 +1,19 @@
 #!/usr/bin/env python
-# File name: pickling.py
+# File name: trigger.py
 
 import os
 from main import *
 import cPickle as pickle
-# OR import pickle
 
-filedata = 'filelist.data'      # the files where we will persistently store the object
+''' Executed at every booting of fluxbox. It creates the data file(s) keeping track of the ExecMenuItems
+in the current menu '''
+
 itemdata = 'itemlist.data'
 
-file_list = GetLatestFiles('')
-item_list = ListExecItemsFromDesktop(file_list)
-
-
-
-# Write to the file
-f = file(filedata, 'w')
-pickle.dump(file_list, f)                # dump the object to a file
-f.close()
+item_list = ListExecItemsFromDesktop('')
 
 f = file(itemdata, 'w')
 pickle.dump(item_list, f)                # dump the object to a file
 f.close()
 
-del item_list,file_list
-
+del item_list

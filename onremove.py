@@ -1,59 +1,67 @@
 #!/usr/bin/env python
+## Filename : onremove.py
+
 import os
 import cPickle as pickle
 from main import *
 
-''' Run when a desktop file is deleted (on removal of a package) '''
+''' Executed when a  .desktop file is removed, generally on removal of a package '''
 
 itemdata = 'itemlist.data'
-filedata = 'filelist.data'
-
-f = file(filedata)
-file_list = pickle.load(f) 
-f.close()
 
 f = file(itemdata)
 item_list = pickle.load(f) 
-f.close()
 
+init_string, end_string, dic = ParseFluxboxMenu('')
 
-new_file_list = GetLatestFiles('')
-for filename in file_list:
-	if filename not in new_file_list:
-		if fnmatch.fnmatch(filename,'*.desktop'):
-			c = -1
-			for var in item_list:
-				c += 1
-				if var[0] == filename:
-					line_to_remove = var[1]
-					item_list.pop(c)			# Update item_list for next iteration
-					break					
-			break
-		
-filename = os.path.expanduser('~/.fluxbox/menu')
-f = file(filename,'r')
+old_file_list = item_list[:]
 
-text = f.read()
-lines = text.split('\n')
-for i in range(0,len(lines)):
-	if line_to_remove in lines[i]:
-		lines.pop(i)
+new_file_list = ListExecItemsFromDesktop('')
+
+for x in old_file_list:
+	if x not in new_file_list:
+		item = x						# Get the removed ExecMenuItem
+		#print item.label
 		break
+	
 
 
-f = file(filename,'w')
-text = ''
-for l in lines:
-	text += l + '\n'
-f.write(text)
-f.close()
-
-# Getting ready for next iteration of daemon loop
-f = file(filedata, 'w')
-pickle.dump(new_file_list, f)                # dump the object to a file
-f.close()
-
+#removed_file = getdiff(old_file_list, new_file_list)
+#
+#item = removed_file[0]				# Get the removed ExecMenuItem
+			
+item_list.remove(item)			# Update item_list for next iteration of daemon
 f = file(itemdata, 'w')
 pickle.dump(item_list, f)                # dump the object to a file
 f.close()
+			
+	
+	
+init_string, end_string, dic = ParseFluxboxMenu('')
+Sort = is_sorted(dic[item.submenu].members)
+dic[item.submenu].RemoveFromSubMenu(item)
 
+list = sortdic(dic)
+
+string = init_string
+for m in list :
+	if m.label not in submenu_dict.keys():
+		#continue
+		pass
+	if m.population != 0:
+		if m.label == item.submenu:
+			m.GenerateSubMenu(Sort = Sort)
+		else:
+			m.GenerateSubMenu(Sort = is_sorted(m.members))
+		string += m.body
+		string += '\n'
+
+
+string += end_string
+
+filename = os.path.expanduser('~/.fluxbox/menu')
+f = file(filename,'w')
+f.write(string)
+f.close()
+
+		

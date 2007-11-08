@@ -1,11 +1,28 @@
-#!/usr/bin/env python
-##Fluxbox Menu Generator
+# /usr/bin/env python
+## Filename : main.py
 
-''' This is the main file where various classes and functions are defined'''
+import os, fnmatch
 
-import os, fnmatch, sets
+''' The main file of MarchFluxMenu. All the functions and variables are defined over here. '''
 
-
+def is_sorted(list):
+	''' Checks if the list passed on as argument is sorted or not '''
+	
+	old = list[:]
+	new = list[:]
+	new.sort()
+	if old == new:
+		return True		## If list is sorted
+	else:
+		return False		## If list is NOT sorted
+	
+def sortdic(adict):
+	''' Takes a dictionary and returns a SORTED list of items (not keys) '''
+	
+	items = adict.items()
+	items.sort()
+	return [value for key, value in items]
+	
 def IconFind(icon_name):
 	''' Implements the icon finding algorithm. Tries to match label name with names of 
 	icon files in the directory /usr/share/pixmaps'''
@@ -24,9 +41,8 @@ def IconFind(icon_name):
 #						elif icon_name.partition('.')[0] in name:
 #							return os.path.join(root, name)
 				
-			
-	return '~/.marchfluxmenu/icons/application-default-icon.png'		
-	
+	## Default icon for apps with no icons!	
+	return '~/.marchfluxmenu/icons/application-default-icon.png'	
 
 class ExecMenuItem:
 	def __init__(self, label, command, icon, submenu):
@@ -35,7 +51,10 @@ class ExecMenuItem:
 		self.icon = icon
 		self.submenu = submenu
 		
-	def CreateMenuLine(self):
+	def __cmp__(self, other):
+		return cmp(self.label.upper(), other.label.upper())
+		
+	def GenerateMenuLine(self):
 		label = '(' + self.label + ')'
 		command = '{' + self.command + '}'
 		if '/' not in self.icon:
@@ -43,47 +62,89 @@ class ExecMenuItem:
 		icon = '<' + self.icon + '>'
 		
 		
-		return '[exec]' + '  ' + label + '  ' +  command + '  ' + icon +'\n'
-	
-	
+		return '\t[exec]' + '  ' + label + '  ' +  command + '  ' + icon +'\n'
+
 class SubMenuItem:
-	def __init__(self, label, icon, body='', members=[], population=0):
+	def __init__(self, label, icon, members):
 		self.label = label
 		self.icon = icon
-		self.population = population
 		self.members = members
-		self.body = '  [submenu]' + '  ' + '('+label+')' + '  ' +'<'+ icon + '>' +'\n' + '  [end]'
 		
 		
-	def AppendToMenu(self, ExecMenuItem):
-#		if '[end]' not in self.body:
-#			self.body += CreateMenuLine(ExecMenuItem)
-#		else:
-	
-		menuline = ExecMenuItem.CreateMenuLine()
-		list = self.body.split('\n')
-		### No Sorting of menu items!! Can be added easily if reqrd.
-		#list.sort()
+		self.population = len(self.members)
+		self.body = ''
 		
-		end = list.pop()	## removing the '[end]'
-		list.append('\t\t' + menuline)			## Adding the new Exec item
+		#self.GenerateSubMenu()
 		
-		self.body = list[0] 					## rebuilding body
-		for item in list[1:]:
-			if item != '':
-				self.body +=  '\n' + item 
-		self.body +=  end
-		
+	def AppendToSubMenu(self,item):
+		self.members.append(item)
 		self.population += 1
-		self.members.append(ExecMenuItem)
 		
-		return self
+	def GenerateSubMenu(self, Sort):
 		
-	def GenerateSubMenu(self):
+		if Sort:
+			self.members.sort()
+		text = '   [submenu]' + '  ' + '('+ self.label + ')' + '  ' +'<'+ self.icon + '>' +'\n'
+		
+		for item in self.members:
+			text += item.GenerateMenuLine()
+			
+		text += '   [end]'
+		self.body = text[:]
+		del text
+		
 		return self.body
+	
+	def WriteMenuFile(self):
+		path = ''
+		f = file(path + self.label + '.menu','w')
+		f.write(self.body)
+		f.close()
+		
+	def RemoveFromSubMenu(self,item):
+		ind = self.members.index(item)
+		self.members.pop(ind)
+		#self.members.remove(item)
+		self.population = self.population - 1
+		
+		#return self.members
+		
+
+#############################
+## Variables Defined :
+#############################
+
+m8 = SubMenuItem('Sound & Video','~/.marchfluxmenu/icons/applications-multimedia.png',[])
+m7 = SubMenuItem('Programming','~/.marchfluxmenu/icons/applications-development.png',[])
+m1 = SubMenuItem('Education','~/.marchfluxmenu/icons/applications-education.png',[])
+m2 = SubMenuItem('Games','~/.marchfluxmenu/icons/applications-games.png',[])
+m3 = SubMenuItem('Graphics','~/.marchfluxmenu/icons/applications-graphics.png',[])
+m4 = SubMenuItem('Internet','~/.marchfluxmenu/icons/applications-internet.png',[])
+m5 = SubMenuItem('Office','~/.marchfluxmenu/icons/applications-office.png',[])
+m9 = SubMenuItem('System Tools','~/.marchfluxmenu/icons/applications-system.png',[])
+m0 = SubMenuItem('Accessories','~/.marchfluxmenu/icons/applications-accessories.png',[])
+m6 = SubMenuItem('Others','~/.marchfluxmenu/icons/applications-other.png',[])
+
+#submenu_list = [m0,m1,m2,m3,m4,m5,m7,m8,m9,m6]
+
+	
+submenu_dict = { 
+'Sound & Video': m8,
+'Programming':m7, 
+'Education':m1, 
+'Games':m2,
+'Graphics':m3,
+'Internet':m4,
+'Office':m5,
+'System Tools':m9,
+'Accessories':m0,
+'Others':m6
+}
 
 
-
+#############################
+## Functions Defined :
+#############################
 
 def ParseDesktopFile(filename):
 	''' Parses a .desktop file and returns an ExecMenuItem instance'''
@@ -106,7 +167,10 @@ def ParseDesktopFile(filename):
 			elif text[0] == 'Icon':
 				icon = text[1].replace ( "\n", "" )
 			elif text[0] == 'Categories':
-				categories = text[1].split(';')
+				if ';' in text[1]:
+					categories = text[1].split(';')
+				else:
+					categories = text[1]
 				if 'AudioVideo'  in categories:
 					submenu = 'Sound & Video'
 				elif 'Development' in categories:
@@ -137,25 +201,63 @@ def ParseDesktopFile(filename):
 	f.close()
 	
 
-def ParseMenuFile():	
-	'''' Parses the fluxbox menu file and returns a list of tuples, 	each 2-tuple
-	containing the submenu name & line number where the submenu name appears in the menu file '''
+def ParseFluxboxMenu(menufile):
+	''' Parses the ~/.fluxbox/menu file, and returns a dictonary  of included SubMenuItem instances, 
+	complete with respective ExecMenuItem members. Keys of the dict are the submenu labels '''
 	
-	filename = os.path.expanduser('~/.fluxbox/menu')
-	f = file(filename,'r')
+	menufile = os.path.expanduser('~/.fluxbox/menu')
+	submenus_in_menu = []
+	lines =[]
+	f = file(menufile) 
+	text = f.read()
 	
-	ln =0
-	list = []
-	for line in f.readlines():
-		ln += 1
-		if '[submenu]' in line:
-			label = ''
-			for i in range(line.find('(')+1,line.find(')')):
-				label += line[i]
-			list.append((label,ln-1))
+	init_text = text.partition('   [submenu]')[0]
 	
-	f.close()
-	return list
+	end_text = text.rpartition(' [end]')[2]
+	
+	ll= text.split('\n')
+	for l in ll:
+		lines.append(l.replace('\r',''))
+	
+	for ln in range(0,len(lines)):
+				
+		if '   [submenu]' in lines[ln]:
+			menu_label = lines[ln].partition('(')[2].partition(')')[0]
+			menu_icon = lines[ln].partition('<')[2].partition('>')[0]
+			submenu = SubMenuItem(menu_label, menu_icon, [])
+			ln += 1
+			while True:
+				if '   [end]' in lines[ln] :
+					submenus_in_menu.append(submenu)
+					ln += 1
+					break
+				else:
+					item_label = lines[ln].partition('(')[2].partition(')')[0]
+					item_command = lines[ln].partition('{')[2].partition('}')[0]
+					item_icon = lines[ln].partition('<')[2].partition('>')[0]
+					item_submenu = menu_label		
+					submenu.AppendToSubMenu(ExecMenuItem(item_label, item_command, item_icon, item_submenu))
+					ln += 1
+					
+		else:
+			pass
+	
+	dict = { 
+	'Sound & Video': m8,
+	'Programming':m7, 
+	'Education':m1, 
+	'Games':m2,
+	'Graphics':m3,
+	'Internet':m4,
+	'Office':m5,
+	'System Tools':m9,
+	'Accessories':m0,
+	'Others':m6
+	}
+	for m in submenus_in_menu:
+		dict[m.label] = m
+		
+	return init_text, end_text, dict
 
 def GetLatestFiles(dirname):
 	''' returns a list of files (with filepath) sorted according to newest first'''
@@ -178,46 +280,35 @@ def GetLatestFiles(dirname):
 
 def ListExecItemsFromDesktop(filelist):
 	''' Returns a list if 2-tuples, each containing the *.desktop filepath &
-	the label of the ExecMenuItem instance that the file describes
-	To be used for removing extinct items from menu. This list is sorted according to label names'''
+	the  ExecMenuItem instance that the file describes
+	To be used for removing extinct items from menu. ##This list is sorted '''
 	
 	
-	list = []
-	#filelist = GetLatestFiles('')
+	l = []
+	filelist = GetLatestFiles('')
 	for filename in filelist:
-		if fnmatch.fnmatch(filename,'*.desktop'):
-			item = ParseDesktopFile(filename)
+		if fnmatch.fnmatch(filename,'*.desktop'):			
 			try:
-				a = ((filename, item.label))
-				list.append(a)
+				item = ParseDesktopFile(filename)
+				try:
+					lab = item.label
+					l.append(item)
+				except:
+					pass
 			except:
 				pass
-		list.sort(lambda x,y:cmp(x[1].upper(),y[1].upper()))
-	return list
+		#list.sort(lambda x,y:cmp(x[1].upper(),y[1].upper()))
+	return l
 
-def ListExecItemsFromMenu(menufile):
-	''' returns a list of labels of the ExecMenuItem elements defined in the menufile 
-	(not required right now)'''
-	
-	menufile = os.path.expanduser('~/.fluxbox/menu')
-	
-	f = file(menufile,'r')
-	
-	list = []
-	text = f.read()
-	lines = text.split('\n')
-	
-	for l in lines:
-		if '[exec]' in l:
-			a = l.partition('(')[2].partition(')')[0]
-			list.append(a)
-	
-	return list	
 
-def SortDesktopFiles():
-	list = ListExecItemsFromDesktop(GetLatestFiles(''))
-	desktop_file_list = []
-	for x in list:
-		desktop_file_list.append(x[0])
-	
-	return desktop_file_list
+
+
+
+
+
+
+
+
+###############
+#a,b,c = ParseFluxboxMenu('')
+#print c
