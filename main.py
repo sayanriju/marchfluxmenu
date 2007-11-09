@@ -278,14 +278,14 @@ def ListExecItemsFromDesktop(filelist):
 	filelist = GetLatestFiles('')
 	for filename in filelist:
 		if fnmatch.fnmatch(filename,'*.desktop'):			
+			item = ParseDesktopFile(filename)
 			try:
-				item = ParseDesktopFile(filename)
-				try:
-					lab = item.label
-					l.append(item)
-				except:
-					pass
+				a = item.label
+				l.append(item)
+				
 			except:
+				#print filename
 				pass
+		
 		#list.sort(lambda x,y:cmp(x[1].upper(),y[1].upper()))
 	return l

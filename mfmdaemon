@@ -1,4 +1,4 @@
-y#! /bin/bash
+#! /bin/bash
 
 ## Variables
 DIRECTORY=/usr/share/applications/		# Directory to watch for changes

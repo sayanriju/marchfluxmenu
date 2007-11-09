@@ -2,6 +2,7 @@
 ## Filename: mfm_generate.py
 
 import os, fnmatch
+import cPickle as pickle
 from main import *
 
 ''' Generates the Fluxbox Menu '''
@@ -47,5 +48,16 @@ filename = os.path.expanduser('~/.fluxbox/menu')
 f = file(filename,'w')
 f.write(string)
 f.close()
+
+itemdata = 'itemlist.data'
+
+item_list = ListExecItemsFromDesktop('')
+
+
+f = file(itemdata, 'w')
+pickle.dump(item_list, f)                # dump the object to a file
+f.close()
+
+del item_list
 
 

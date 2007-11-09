@@ -63,5 +63,3 @@ filename = os.path.expanduser('~/.fluxbox/menu')
 f = file(filename,'w')
 f.write(string)
 f.close()
-
-		

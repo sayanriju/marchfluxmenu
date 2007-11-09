@@ -8,9 +8,11 @@ import cPickle as pickle
 ''' Executed when a .desktop file is added, generally on installtion of a new package '''
 
 itemdata = 'itemlist.data'
-f = file(itemdata)
-item_list = pickle.load(f) 
-#f.close()
+f = file(itemdata, 'r')
+l = pickle.load(f)                # dump the object to a file
+print len(l)
+f.close()
+
 
 new_file_list = GetLatestFiles('')
 for filename in new_file_list:
@@ -19,10 +21,7 @@ for filename in new_file_list:
 			item = ParseDesktopFile(filename)	# Parse the newest .desktop file
 			#print item.submenu
 			
-			item_list.append(item)				# Update item_list for next iteration of daemon
-			f = file(itemdata, 'w')
-			pickle.dump(item_list, f)                # dump the object to a file
-			f.close()
+			
 			break
 		except:
 			pass
@@ -55,3 +54,13 @@ filename = os.path.expanduser('~/.fluxbox/menu')
 f = file(filename,'w')
 f.write(string)
 f.close()
+
+item_list = ListExecItemsFromDesktop('')
+
+f = file(itemdata, 'w')
+pickle.dump(item_list, f)                # dump the object to a file
+f.close()
+
+print len(item_list)
+
+
