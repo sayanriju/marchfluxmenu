@@ -49,15 +49,17 @@ f = file(filename,'w')
 f.write(string)
 f.close()
 
-itemdata = 'itemlist.data'
-
-item_list = ListExecItemsFromDesktop('')
-
-
-f = file(itemdata, 'w')
-pickle.dump(item_list, f)                # dump the object to a file
-f.close()
-
-del item_list
+#''' Initiation! Records the currently exisitng ExecMenuItems present from the .desktop files '''
+#
+#itemdata = 'itemlist.data'
+#
+#item_list = ListExecItemsFromDesktop('')
+#
+#
+#f = file(itemdata, 'w')
+#pickle.dump(item_list, f)                # dump the object to a file
+#f.close()
+#
+#del item_list
 
 

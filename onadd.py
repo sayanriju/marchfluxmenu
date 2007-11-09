@@ -8,20 +8,12 @@ import cPickle as pickle
 ''' Executed when a .desktop file is added, generally on installtion of a new package '''
 
 itemdata = 'itemlist.data'
-f = file(itemdata, 'r')
-l = pickle.load(f)                # dump the object to a file
-print len(l)
-f.close()
-
 
 new_file_list = GetLatestFiles('')
 for filename in new_file_list:
 	if fnmatch.fnmatch(filename,'*.desktop'):
 		try:
 			item = ParseDesktopFile(filename)	# Parse the newest .desktop file
-			#print item.submenu
-			
-			
 			break
 		except:
 			pass
@@ -55,12 +47,14 @@ f = file(filename,'w')
 f.write(string)
 f.close()
 
+## Updating item list for next iteration of daemon
+
 item_list = ListExecItemsFromDesktop('')
 
 f = file(itemdata, 'w')
 pickle.dump(item_list, f)                # dump the object to a file
 f.close()
 
-print len(item_list)
+#print len(item_list)
 
 
