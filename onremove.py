@@ -13,7 +13,6 @@ f = file(itemdata)
 item_list = pickle.load(f) 
 f.close()
 
-init_string, end_string, dic = ParseFluxboxMenu('')
 
 old_file_list = item_list[:]
 del item_list
@@ -23,7 +22,8 @@ for x in old_file_list:
 	if x not in new_file_list:
 		item = x						# Get the removed ExecMenuItem
 		break
-	
+
+#print item.label
 init_string, end_string, dic = ParseFluxboxMenu('')
 Sort = is_sorted(dic[item.submenu].members)
 dic[item.submenu].RemoveFromSubMenu(item)

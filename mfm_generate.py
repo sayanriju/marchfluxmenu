@@ -25,14 +25,12 @@ string += ExecMenuItem('Web Browser', 'firefox', IconFind('firefox.png'), '').Ge
 string += ExecMenuItem('Terminal', 'xterm', IconFind('term.png'), '').GenerateMenuLine()
 string +='''    [separator] (--------)
  [submenu] (Settings) {settings} <~/.marchfluxmenu/icons/preferences-system.png>
-		[exec] (Menu Editor) {~/.marchfluxmenu/fluxmenu/fluxMenu.py}
-		[separator] (--------)
 		[config] (Fluxbox Menu)
 		[reconfig] (Reload Config)
 		[restart] (Restart Fluxbox)
 		[workspaces] (Workspaces)
  [end]
-	[separator] (--------)'''
+[separator] (tag start)	'''
 string += '\n'
 	
 for m in list:
@@ -41,7 +39,7 @@ for m in list:
 		string += m.body
 		string += '\n'
 
-string += '[separator]\n' +'[exit] (Exit) <~/.marchfluxmenu/icons/exit.png>\n'+ '[end]\n'
+string += '[separator] (tag end)\n' + '[exit] (Exit) <~/.marchfluxmenu/icons/exit.png>\n'+ '[end]\n'
 
 #print string
 filename = os.path.expanduser('~/.fluxbox/menu')
@@ -49,17 +47,17 @@ f = file(filename,'w')
 f.write(string)
 f.close()
 
-#''' Initiation! Records the currently exisitng ExecMenuItems present from the .desktop files '''
-#
-#itemdata = 'itemlist.data'
-#
-#item_list = ListExecItemsFromDesktop('')
-#
-#
-#f = file(itemdata, 'w')
-#pickle.dump(item_list, f)                # dump the object to a file
-#f.close()
-#
-#del item_list
+''' Initiation! Records the currently exisitng ExecMenuItems present from the .desktop files '''
+
+itemdata = 'itemlist.data'
+
+item_list = ListExecItemsFromDesktop('')
+
+
+f = file(itemdata, 'w')
+pickle.dump(item_list, f)                # dump the object to a file
+f.close()
+
+del item_list
 
 

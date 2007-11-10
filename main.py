@@ -102,8 +102,8 @@ class SubMenuItem:
 		f.close()
 		
 	def RemoveFromSubMenu(self,item):
-		ind = self.members.index(item)
-		self.members.pop(ind)
+		self.members.remove(item)
+		#self.members.pop(ind)
 		#self.members.remove(item)
 		self.population = self.population - 1
 		
@@ -214,23 +214,30 @@ def ParseFluxboxMenu(menufile):
 	f = file(menufile) 
 	text = f.read()
 	
-	init_text = text.partition('   [submenu]')[0]
-	
-	end_text = text.rpartition(' [end]')[2]
-	
+	init_text = text.partition('[separator] (tag start)')[0] + '[separator] (tag start)\n'
+	#print init_text
+	end_text = '[separator] (tag end)' + text.rpartition('[separator] (tag end)')[2] 
+	#print end_text
 	ll= text.split('\n')
 	for l in ll:
 		lines.append(l.replace('\r',''))
 	
-	for ln in range(0,len(lines)):
-				
-		if '   [submenu]' in lines[ln]:
+	try:
+		start = lines.index('[separator] (tag start)')
+		end = lines.index('[separator] (tag end)')
+	except:
+		start, end = 0, len(lines)
+
+	#print start, end
+	for ln in range(start,end):
+					
+		if '[submenu]' in lines[ln]:
 			menu_label = lines[ln].partition('(')[2].partition(')')[0]
 			menu_icon = lines[ln].partition('<')[2].partition('>')[0]
 			submenu = SubMenuItem(menu_label, menu_icon, [])
 			ln += 1
 			while True:
-				if '   [end]' in lines[ln] :
+				if '[end]' in lines[ln] :
 					submenus_in_menu.append(submenu)
 					ln += 1
 					break
@@ -289,3 +296,5 @@ def ListExecItemsFromDesktop(filelist):
 		
 		#list.sort(lambda x,y:cmp(x[1].upper(),y[1].upper()))
 	return l
+##
+
