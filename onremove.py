@@ -36,6 +36,7 @@ for m in list :
 		#continue
 		pass
 	if m.population != 0:
+		#print m.label
 		if m.label == item.submenu:
 			m.GenerateSubMenu(Sort = Sort)
 		else:
