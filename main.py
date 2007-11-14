@@ -25,21 +25,29 @@ def sortdic(adict):
 	
 def IconFind(icon_name):
 	''' Implements the icon finding algorithm. Tries to match label name with names of 
-	icon files in the directory /usr/share/pixmaps'''
+	icon files in the directorie(s) listed in 'icon_dirs' '''
 	
-	for root, dirs, files in os.walk('/usr/share/pixmaps'):
-		for name in files:
-			if icon_name == name:
-				return os.path.join(root, name)
-			elif icon_name.partition('.')[0] in name:
-				return os.path.join(root, name)
-#			else:
-#				for root, dirs, files in os.walk('/usr/share/icons'):
-#					for name in files:
-#						if icon_name == name:
-#							return os.path.join(root, name)
-#						elif icon_name.partition('.')[0] in name:
-#							return os.path.join(root, name)
+	icon_dirs = ['/usr/share/pixmaps/','/usr/share/icons/hicolor/48x48/apps/']
+	
+	icon_list = []	# List of 2-tuples, each conatining name (w/o file-extension) of icon 
+					# and absolute location of file
+	
+	for dirname in icon_dirs:
+		for filename in os.listdir(dirname):
+			if os.path.isfile(dirname+filename):
+				
+				icon_list.append((filename.rpartition('.')[0],dirname+filename))
+				
+	
+	for var in icon_list:
+		if icon_name == var[0]:
+			return var[1]
+	for var in icon_list:
+		if icon_name.partition('.')[0] in var[0]:
+			return var[1]
+			
+	
+
 				
 	## Default icon for apps with no icons!	
 	return '~/.marchfluxmenu/icons/application-default-icon.png'	
